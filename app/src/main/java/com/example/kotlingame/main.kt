@@ -12,15 +12,15 @@ import java.lang.System.exit
 fun main(argv:Array<String>){
     val addit = Addit()
     while(true) {
-        println("기차 게임\n\n1. 새로하기\n2. 불러오기\n3. 종료\n")
+        println("Train Game\n\n1. Start\n2. Load\n3. Exit\n")
         when(addit.sc.nextLine()){
-            "1" -> println("게임시작")
+            "1" -> println("Start Game")
             "2" -> {
-                println("불러오기")
-                addit.UserSet(arrayOf("0", "1", "2", "장조림", "3"))
+                println("Game Loading")
+                addit.main_act.UserSet(arrayOf("0", "1", "2", "장조림", "3"))
             }
             "3" -> exit(0)
-            else -> println("잘못 입력하였습니다.")
+            else -> println("Your input is Wrong")
         }
         addit.cls()
     }
