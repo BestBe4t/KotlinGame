@@ -11,17 +11,23 @@ import java.lang.System.exit
  */
 fun main(argv:Array<String>){
     val addit = Addit()
+    var user = Addit.Companion.User
     while(true) {
         println("Train Game\n\n1. Start\n2. Load\n3. Exit\n")
-        when(addit.sc.nextLine()){
-            "1" -> println("Start Game")
+        when(Addit.sc.nextLine()){
+            "1" -> {
+                File("savefile.md").writeText("10\n0\n1\n2\n3")
+                println("Game Start")
+            }
             "2" -> {
                 println("Game Loading")
-                addit.main_act.UserSet(arrayOf("0", "1", "2", "장조림", "3"))
+                val save=File("savefile.md").readLines()
+                user=addit.UserSet(arrayOf(save[0], save[1], save[2], save[3], save[4]))
+                println("${user.city}, ${user.item[0]}, ${user.item[1]}, ${user.money}, ${user.train}")
             }
             "3" -> exit(0)
             else -> println("Your input is Wrong")
         }
-        addit.cls()
+        //addit.cls()
     }
 }
