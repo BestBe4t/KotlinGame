@@ -17,7 +17,7 @@ fun main(argv:Array<String>){
             "1" -> println("Start Game")
             "2" -> {
                 println("Game Loading")
-                addit.UserSet(arrayOf("0", "1", "2", "장조림", "3"))
+                addit.main_act.UserSet(arrayOf("0", "1", "2", "장조림", "3"))
             }
             "3" -> exit(0)
             else -> println("Your input is Wrong")
