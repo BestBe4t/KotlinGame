@@ -1,5 +1,10 @@
 package com.example.kotlingame
 
+import android.content.ContentValues.TAG
+import android.nfc.Tag
+import android.util.Log
+import  kotlinx.coroutines.*
+
 import java.io.File
 import java.lang.System.exit
 
@@ -9,7 +14,7 @@ import java.lang.System.exit
         * Use_LN: Kotlin
         * Subject: Train Game
  */
-fun main(argv:Array<String>){
+fun main(argv:Array<String>) = runBlocking{    /*
     val addit = Addit()
     var user = Addit.Companion.User
     while(true) {
@@ -30,4 +35,35 @@ fun main(argv:Array<String>){
         }
         //addit.cls()
     }
+    */
+    val job = GlobalScope.launch {
+
+        delay(1000L)
+        println("World!")
+    }
+
+    print("Hello, ")
+    job.join()
+    println("finish\n")
+    fun test2_1(){
+        runBlocking {
+            val jobs = List(10){
+                launch {
+                    delay(1011L)
+                    println("aaa")
+                }
+            }
+            println("End runBlock")
+            launch {
+                var a=10
+                for(i in 1..10) {
+                    delay(100L)
+                    println(a)
+                    a+=10
+                }
+            }
+        }
+        println("End function")
+    }
+    test2_1()
 }
