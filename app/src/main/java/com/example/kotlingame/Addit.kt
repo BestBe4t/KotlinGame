@@ -1,58 +1,86 @@
 package com.example.kotlingame
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileNotFoundException
 import java.util.*
+import java.security.MessageDigest
+import java.math.BigInteger
 
-open class Addit{
-    companion object {
-        object User{                                                                                                    //object user
-            var money=0
-            var train=0
-            var city=0
-            var item:Array<String> = arrayOf("", "")
-        }
-        val sc:Scanner = Scanner(System.`in`)                                                                           //Scanner temp
-    }
+        data class User(                                                                                                //object user
+    var money:Int=0,
+    var train:Int=0,
+    var city:Int=0,
+    var item:Item?=null
+)
+
+data class Item(
+    var name:String,
+    var value:Int,
+    var Count:Int,
+    var NextItem:Item?=null
+)
+
+open class Addit{                                                                                                       //integrated fun & val
+    var user_info:User = User()                                                                                         //user info
+    val sc: Scanner = Scanner(System.`in`)                                                                              //Scanner temp
     fun cls(){                                                                                                          //Clear Console
         for(i in 0..75) println("\n")
     }
-    fun UserSet(user: Array<String>):Companion.User {
-        Addit.Companion.User.money = user.get(0).toInt()
-        Addit.Companion.User.train = user.get(1).toInt()
-        Addit.Companion.User.city = user.get(2).toInt()
-        Addit.Companion.User.item[0] = user.get(3)
-        Addit.Companion.User.item[1] = user.get(4)
-
-        return Addit.Companion.User
+    fun String.md5(): String{
+        val md = MessageDigest.getInstance("MD5")
+        return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
     }
-}
 
-class city : Addit(){                                                                                                   //city_page fun & var
-    fun Menu(user: Addit.Companion.User){
-        println("City Name : ${user.city}, Money : ${user.money}")
-        println("1. Buy, 2. Sell, 3. Upgrade, 4. Move Or Change Train, 5. Save & Exit")
-        when(Addit.sc.nextLine()){
-            "1"->println("Buy product")
-            "2"->println("Sell product")
-            "3"->println("Upgrade mod")
-            "4"->Moving().menu(user)
-            "5"->println("Save & Exit")
-            else -> println("Your input is Wrong")
+    fun UserSet(user: Array<String>):User {                                                                             //set userinfo
+        user_info.money = user.get(0).toInt()                                                                           //has money
+        user_info.train = user.get(1).toInt()                                                                           //has train
+        user_info.city = user.get(2).toInt()                                                                            //open city
+
+        return user_info
+    }
+    fun Save(user: User){
+        var text="${user.money}\n${user.city}\n${user.train}"
+        File("savefile.md").writeText(text)
+        File("savefile.hash").writeText(text.md5())
+        var next=0
+        while (next==0){
+            text="${user.item!!.name}, ${user.item!!.value}, ${user.item!!.Count}"
+            File("saveitem.md").writeText(text)
+            if(user.item!!.NextItem != null){
+                File("saveitenm.nd").writeText("\n")
+                user.item=user.item!!.NextItem
+            }else break
         }
+        text=File("saveitem.md").readText()
+        File("saveitem.hash").writeText(text.md5())
     }
-}
-
-class Moving : Addit(){                                                                                                 //moving_page fun & var
-    fun menu(user: Addit.Companion.User) {                                                                              //moving page activate all train's are move
-        println("All Train's are moving")
-        println("1. Train's Progress, 2. Save & Exit")
-        when(Addit.sc.nextLine()){
-            "1"->println("Train's Progress")
-            "2"->println("Save & Exit")
-            else -> println("Your input is Wrong")
+    fun Load(){
+        GlobalScope.launch {
+            var plantext = File("savefile.md").readText()
+            var hashtext = File("savefile.hash").readText()
+            delay(1000L)
         }
+        try {
+            val save= File("savefile.md").readLines()
+            user_info=UserSet(arrayOf(save[0], save[1], save[2]))
+            println("Game Loading")
+            println("${user_info.money}, ${user_info.train}, ${user_info.city}")
+        }
+        catch (e: FileNotFoundException){
+            println("Save File doesn't exist")
+        }
+        catch (e: IndexOutOfBoundsException){
+            println("Save File Contents Error")
+        }
+        City().Menu(user_info)
+    }
+    class main_act{                                                                                                     //main_page fun & var
+
     }
 }
 
-class main_act : Addit(){                                                                                               //main_page fun & var
 
-}
+
