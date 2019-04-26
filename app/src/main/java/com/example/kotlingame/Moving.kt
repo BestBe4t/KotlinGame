@@ -1,7 +1,14 @@
+/*
+        * Made By DuckBill
+        * Start: 2019.04.09
+        * Use_LN: Kotlin
+        * Subject: Train Game
+*/
+
 package com.example.kotlingame
 
 class Moving:Addit(){                                                                                                   //moving_page fun & var
-    fun menu(user: User) {                                                                                              //moving page activate all train's are move
+    fun menu(user:User) {                                                                                              //moving page activate all train's are move
         while (true) {
             println("All Train's are moving")
             println("1. Train's Progress, 2. Save & Exit")

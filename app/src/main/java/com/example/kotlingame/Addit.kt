@@ -1,3 +1,10 @@
+/*
+        * Made By DuckBill
+        * Start: 2019.04.09
+        * Use_LN: Kotlin
+        * Subject: Train Game
+*/
+
 package com.example.kotlingame
 
 import kotlinx.coroutines.GlobalScope
@@ -18,15 +25,47 @@ data class User(                                                                
 )
 
 data class Item(
-    var Name:String,
-    var Value:Int,
-    var Count:Int,
+    var Name:String="",
+    var Value:Int=0,
+    var Count:Int=0,
     var NextItem:Item?=null
 )
 
 open class Addit{                                                                                                       //integrated fun & val
     var user_info:User = User()                                                                                         //user info
     val sc: Scanner = Scanner(System.`in`)                                                                              //Scanner temp
+    var last_item:Item? = Item()                                                                                        //Latest Item
+    val NoVal=-1                                                                                                        //Hasn't Value
+
+    val city1:Array<Item> = arrayOf(
+        Item("city1 NB1 Item", 1000, 50),
+        Item("city1 NB2 Item", 1100, 50),
+        Item("city1 NB3 Item", 1200, 50),
+        Item("city1 NB4 Item", 1300, 50),
+        Item("city1 NB5 Item", 1400, 50)
+    )
+    val city2:Array<Item> = arrayOf(
+        Item("city2 NB1 Item", 5000, 50),
+        Item("city2 NB2 Item", 5200, 50),
+        Item("city2 NB3 Item", 5400, 50),
+        Item("city2 NB4 Item", 5600, 50),
+        Item("city2 NB5 Item", 5800, 50)
+    )
+    val city3:Array<Item> = arrayOf(
+        Item("city3 NB1 Item", 10000, 50),
+        Item("city3 NB2 Item", 11000, 50),
+        Item("city3 NB3 Item", 12000, 50),
+        Item("city3 NB4 Item", 13000, 50),
+        Item("city3 NB5 Item", 14000, 50)
+    )
+    val city4:Array<Item> = arrayOf(
+        Item("city4 NB1 Item", 15000, 50),
+        Item("city4 NB2 Item", 17000, 50),
+        Item("city4 NB3 Item", 19000, 50),
+        Item("city4 NB4 Item", 21000, 50),
+        Item("city4 NB5 Item", 23000, 50)
+    )
+
     fun cls(){                                                                                                          //Clear Console
         for(i in 0..75) println("\n")
     }
@@ -35,14 +74,14 @@ open class Addit{                                                               
         return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
     }
 
-    fun UserSet(user: Array<String>):User {                                                                             //set userinfo
-        user_info.Money = user.get(0).toInt()                                                                           //has money
-        user_info.Train = user.get(1).toInt()                                                                           //has train
-        user_info.City = user.get(2).toInt()                                                                            //open city
+    fun UserSet(user: Array<Int>):User {                                                                             //set userinfo
+        user_info.Money = if(user.get(0)!=-1) user.get(0) else user_info.Money                                  //has money
+        user_info.Train = if(user.get(1)!=-1) user.get(1) else user_info.Train                                  //has train
+        user_info.City = if(user.get(2)!=-1) user.get(2) else user_info.City                                    //open city
 
         return user_info
     }
-    fun Save(user: User){
+    fun Save(user:User){
         var text="${user.Money}\n${user.City}\n${user.Train}"
         File("savefile.md").writeText(text)
         File("savefile.hash").writeText(text.md5())
@@ -56,7 +95,7 @@ open class Addit{                                                               
             File("saveitem.md").writeText(text)
             if(user.Item!!.NextItem != null){
                 File("saveitenm.md").writeText("\n")
-                user.Item=user.Item!!.NextItem
+                user.Item=user_info.Item!!.NextItem
             }else break
         }
         text=File("saveitem.md").readText()
@@ -84,7 +123,7 @@ open class Addit{                                                               
         GlobalScope.launch {
             var plantext1 = File("savefile.md").readText()
             var hashtext1 = File("savefile.hash").readText()
-            delay(1000L)
+            delay(100L)
             var plantext2 = File("saveitem.md").readText()
             var hashtext2 = File("saveitem.hash").readText()
             if(plantext1.md5()!=hashtext1){
@@ -107,26 +146,22 @@ open class Addit{                                                               
                 save.get(0)
             }
             catch (e:IndexOutOfBoundsException){
-                user_info.Item=Item("",0,0,null)
+                user_info.Item=Item()
                 break
             }
-            user_info.Item!!.Name=save.get(i)
-            user_info.Item!!.Value=save.get(i+1).toInt()
-            user_info.Item!!.Count=save.get(i+2).toInt()
-            if(save.get(i+3)==null){
-                user_info.Item!!.NextItem=null
+            user_info.Item?.Name=save.get(i)
+            user_info.Item?.Value=save.get(i+1).toInt()
+            user_info.Item?.Count=save.get(i+2).toInt()
+            if(save.lastIndex<i+3){
+                user_info.Item?.NextItem=null
                 break
             }else {
-                user_info.Item!!.NextItem = Item("", 0, 0)
+                user_info.Item?.NextItem = Item()
                 user_info.Item = user_info.Item!!.NextItem
                 i+=3
             }
         }
-
         return user_info
-    }
-    class main_act{                                                                                                     //main_page fun & var
-
     }
 }
 
