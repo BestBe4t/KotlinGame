@@ -7,63 +7,67 @@
 
 package com.example.kotlingame
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.Exception
+import java.lang.NullPointerException
 import java.util.*
 import kotlin.system.exitProcess
 
 class City:Addit(){                                                                                                     //city_page fun & var
-    var item:Item = Item()
-
     fun Menu(user:User){
+        var User = user
         while(true) {
-            item= if (user.Item != null) user.Item!! else Item("", 0, 0)
-            println("City Name : ${user.City}, Money : ${user.Money}")
+            println("City Name : ${User.City}, Money : ${User.Money}")
             println("------------Have Products-------------")
-            while(true) {
-                if(item.Name=="" && item.Count == 0) break
-                println("${item.Name}, ${item.Count}")
-                if (item.NextItem == null) break
-                else item = user.Item?.NextItem!!
+            println("|         Name         | Value |Count|")
+            if (!User.link.isEmpty()) {
+                var count=0
+                while(User.link.nodeAtIndex(count)!=null) {
+                    println(
+                        "|    " + User.link.nodeAtIndex(count)!!.Name + "    | " +
+                                User.link.nodeAtIndex(count)!!.Value + " |  " +
+                                User.link.nodeAtIndex(count)!!.Count + "  |"
+                    )
+                    count++
+                }
             }
             println("--------------------------------------")
             println("1. Buy, 2. Sell, 3. Upgrade, 4. Move Or Change Train, 5. Save & Exit")
             when (sc.nextLine()) {
-                "1" -> user=Buy(user)
-                "2" -> user=Sell(user)
-                "3" -> user=Upgrade(user)
-                "4" -> Moving().menu(user)
-                "5" -> Save(user)
+                "1" -> User=Buy(User)
+                "2" -> User=Sell(User)
+                "3" -> User=Upgrade(User)
+                "4" -> Moving().menu(User)
+                "5" -> Save(User)
                 else -> println("Your input is Wrong")
             }
             cls()
         }
     }
 
-    fun Buy(user:User):User{                                                                                                          //buy product
-        println("Buy product")
-        var Item=Item_Menu(0, user.City)                                                                    //Item_Menu return (item NB)*100+(Item CNT)
+    fun Buy(user:User):User{                                                                                            //buy product
+        var Item=Item_Menu(0, user.City)                                                                          //Item_Menu return (item NB)*100+(Item CNT)
         val Item_Name="city"+user.City+" NB"+Item/100+" item"
+        var Item_val:Int
         val Item_CNT=Item%100
+        when (user.City){
+            1 -> Item_val = city1[Item/100].Value
+            2 -> Item_val = city2[Item/100].Value
+            3 -> Item_val = city3[Item/100].Value
+            4 -> Item_val = city4[Item/100].Value
+            else -> Item_val=0
+        }
 
-        if(Item_CNT>50){
-            println("Count Maximum Over..")
-        }else if(city1[(Item/100-1)].Value*Item_CNT>user.Money){
-            println("Money isn't enough")
-        }else{
-            var New_Item:Item=Item(Item_Name, (city1[(Item/100-1)].Value*1.4).toInt(), Item_CNT)
-            user_info=UserSet(arrayOf(NoVal, user.Money-city1[(Item/100-1)].Value*Item_CNT, NoVal))
-            if(user.Item == null) {
-                user.Item=New_Item
-                last_item===user.Item!!.NextItem
-            }
-            else {
-                var fitem:Item=user.Item!!
-                while (true){
-                    if(user.Item==last_item) user.Item!!.NextItem=New_Item
-                    else user.Item=user.Item!!.NextItem
-                }
-                last_item=user.Item
-                user.Item=fitem
+        runBlocking {
+            if (Item_val * Item_CNT > user.Money) {
+                println("Money isn't enough")
+                delay(500L)
+            } else {
+                user.link.append(Item_Name, Item_val, Item_CNT)
+                user.Money -= Item_val * Item_CNT
             }
         }
         return user
@@ -77,8 +81,8 @@ class City:Addit(){                                                             
 
     fun Upgrade(user:User):User {
         var item=0
-        while(true) {
-            println("Upgrade mod\nWhich one do you want upgrade? 1. Train, 2. City")
+        loop@ while(true) {
+            println("Upgrade mode\nWhich one do you want upgrade? 1. Train, 2. City, 3.exit")
             when (sc.nextLine()) {
                 "1" -> {
                     item=Item_Menu(2, user_info.City)
@@ -86,12 +90,13 @@ class City:Addit(){                                                             
                 "2" -> {
                     item=Item_Menu(3, user_info.City)
                 }
+                "3" -> break@loop
                 else -> {
                     println("Wrong Input")
                 }
             }
             if(item!=0){
-                break
+                break@loop
             }
         }
         return user
@@ -120,7 +125,7 @@ class City:Addit(){                                                             
                         }
                         4-> {
                             for (i in 0..4) {
-                                println("${city4[i].Name}  |  ${city4[i].Value}  |  ${city4[i].Count}")
+                                println("|  ${city4[i].Name}  |  ${city4[i].Value}  |  ${city4[i].Count}  |")
                             }
                         }
                     }
