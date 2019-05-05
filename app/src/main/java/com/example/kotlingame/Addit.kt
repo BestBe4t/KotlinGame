@@ -46,8 +46,6 @@ open class Addit{                                                               
     val sc: Scanner = Scanner(System.`in`)                                                                              //Scanner temp
     val NoVal=-1                                                                                                        //Hasn't Value
 
-
-
     val city1:Array<Item<Int>> = arrayOf(
         Item("city1 NB1 Item", 1000, 50, 0),
         Item("city1 NB2 Item", 1100, 50, 1),

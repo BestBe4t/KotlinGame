@@ -75,7 +75,30 @@ class City:Addit(){                                                             
 
     fun Sell(user:User):User{
         println("Sell product")
-        var Item=Item_Menu(1, user_info.City)
+        var i=0
+        while (user.link!!.nodeAtIndex(i)!=null){
+            println("${i+1}  ${user.link.nodeAtIndex(i)!!.Name}  |  ${user.link.nodeAtIndex(i)!!.Value}  |  ${user.link.nodeAtIndex(i)!!.Count}  |")
+            i++
+        }
+        print("Sell products number(If you don't want sell products. Please input 'x'):")
+        when(val input = sc.next()){
+            "x" ->    return user
+            "X" ->    return user
+            else -> {
+                if (input.toInt() > i) println("input error")
+                else {
+                    print("How many you want sell? ")
+                    val cnt = sc.nextInt()
+                    if(cnt>user.link.nodeAtIndex(input.toInt() - 1)!!.Count){
+                        println("Count Error")
+                    }else {
+                        user.Money += user.link.nodeAtIndex(input.toInt() - 1)!!.Value * cnt
+                        if(cnt==user.link.nodeAtIndex(input.toInt() - 1)!!.Count)   user.link.removeAtIndex(input.toInt() - 1)
+                        else    user.link.nodeAtIndex(input.toInt() - 1)!!.Count -= cnt
+                    }
+                }
+            }
+        }
         return user
     }
 
@@ -151,14 +174,10 @@ class City:Addit(){                                                             
                 return 0
             }
             1->{
-                println("Sell Product")
-                return 0
-            }
-            2->{
                 println("Train Upgrade")
                 return 0
             }
-            3->{
+            2->{
                 println("City Upgrade")
                 return 0
             }
